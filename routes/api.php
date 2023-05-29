@@ -18,7 +18,10 @@ Route::group([
      Route::post('logout', [AuthController::class, 'logout']);
      Route::post('refresh', [AuthController::class, 'refresh'])->withoutMiddleware(['auth:api']);
      Route::get('user', [AuthController::class, 'me']);
+     Route::post('register', [AuthController::class, 'register'])->withoutMiddleware(['auth:api']);
  
  });
  
 Route::get('user', [UserController::class, 'show']);
+Route::put('/user/{id}', [UserController::class, 'update']);
+Route::delete('/user/{id}', [UserController::class, 'delete']);
