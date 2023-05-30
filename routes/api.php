@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
+
 
 
 
@@ -22,6 +24,11 @@ Route::group([
  
  });
  
+ //User Routes
 Route::get('user', [UserController::class, 'show']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::delete('/user/{id}', [UserController::class, 'delete']);
+
+//Post Routes
+Route::get('posts', [PostController::class, 'show']);
+Route::post('posts/create', [PostController::class, 'create']);

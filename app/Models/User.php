@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use App\Models\Post;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
-
+    public function posts()
+    {
+    return $this->hasMany(Post::class);
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -61,5 +65,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    
+ 
+    
 
 }
