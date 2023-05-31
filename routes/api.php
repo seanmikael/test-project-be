@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
 
 
 
@@ -32,3 +33,8 @@ Route::delete('/user/{id}', [UserController::class, 'delete']);
 //Post Routes
 Route::get('posts', [PostController::class, 'show']);
 Route::post('posts/create', [PostController::class, 'create']);
+Route::delete('/posts/{id}', [PostController::class, 'delete']);
+
+//Category Routes
+Route::get('categories', [CategoryController::class, 'show']);
+Route::post('categories/create', [CategoryController::class, 'create']);

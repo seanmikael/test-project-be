@@ -4,21 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     public function show() {
-        $posts = Post::All();
+        $posts = Post::with('user', 'category')->get();
 
-        return $posts;
+    return response()->json([
+        'message' => 'Posts retrieved successfully',
+        'posts' => $posts
+    ], 200);
     }
 
     public function create(Request $request){ 
         $request->validate([
-            'content' => 'required | string | max:255',
+            'content' => 'required|string|max:255',
             'status' => 'required|string|in:Publish,Draft',
+            'category_id' => 'required|exists:categories,id'
         ]);
         
         $user = Auth::user();
@@ -31,12 +36,21 @@ class PostController extends Controller
         $post = $user->posts()->create([
             'content' => $request->content,
             'status' => $request->status,
+            'category_id' => $request->category_id,
         ]);
 
       
     return response()->json([
         'message' => 'post created',
         'post' => $post
-    ]);
+    ], 201);
+    }
+
+    public function delete($id){
+        $post = Post::findorFail($id);
+        if(!$post) return response()->json(['message' => "User does not exist!"], 404);
+    
+        $post->delete();
+        return response()->json(['message' => 'User deleted']);
     }
 }
