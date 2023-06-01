@@ -31,6 +31,8 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->category_name = $request->category_name;
+
+        $category->save();
         return response()->json([
             'message' => 'Category updated successfully'
         ]);

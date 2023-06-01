@@ -58,7 +58,10 @@ class AuthController extends Controller
     {
         try {
             auth()->logout();
-            return response()->json(['message' => 'Successfully logged out']);
+    
+            // Remove the access_token cookie
+            return response()->json(['message' => 'Successfully logged out'])
+                ->cookie(cookie()->forget('access_token'));
         } catch (\Exception $e) {
             return response()->json(['message' => 'Logout failed'], 500);
         }

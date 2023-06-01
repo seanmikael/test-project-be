@@ -10,13 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function show() {
-        $posts = Post::with('user', 'category')->get();
+    public function show(Request $request) {
+        $status = $request->input('status', 'Publish');
+        $posts = Post::with('user', 'category')
+            ->where('status', '=', $status)
+            ->get();
 
-    return response()->json([
-        'message' => 'Posts retrieved successfully',
-        'posts' => $posts
-    ], 200);
+        return response()->json([
+            'message' => 'Posts retrieved successfully',
+            'posts' => $posts
+        ], 200);
     }
 
     public function create(Request $request){ 
@@ -47,10 +50,31 @@ class PostController extends Controller
     }
 
     public function delete($id){
-        $post = Post::findorFail($id);
+        $post = Post::findOrFail($id);
         if(!$post) return response()->json(['message' => "User does not exist!"], 404);
     
         $post->delete();
         return response()->json(['message' => 'User deleted']);
+    }
+
+    public function update(Request $request, $id){
+        $request->validate([
+            'content' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'status' => 'required|string|in:Publish,Draft',
+            
+        ]);
+
+        $post = Post::findOrFail($id);
+        $post->content = $request->content;
+        $post->status = $request->status;
+        $post->category_id = $request->category_id;
+        $post->save();
+
+    return response()->json([
+        'message' => 'Post updated',
+        'post' => $post
+    ], 200);
+
     }
 }

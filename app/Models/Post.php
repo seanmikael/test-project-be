@@ -22,6 +22,7 @@ class Post extends Model
 
     protected $fillable = [
         'content',
-        'category_id'
+        'category_id',
+        'status',
     ];
 }
