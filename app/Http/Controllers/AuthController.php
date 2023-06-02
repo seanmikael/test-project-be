@@ -21,18 +21,35 @@ class AuthController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
+        
         $credentials = $request->only('email', 'password');
-
+        
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+        
+        if ($user->status === 'Inactive') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User is inactive',
+            ], 401);
+        }
+    
         $token = auth()->attempt($credentials);
+        
         if (!$token) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
         }
-
+    
         return $this->respondWithToken($token);
-
     }
 
     public function register(Request $request){

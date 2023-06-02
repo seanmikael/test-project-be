@@ -10,11 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function show(Request $request) {
-        $status = $request->input('status', 'Publish');
-        $posts = Post::with('user', 'category')
-            ->where('status', '=', $status)
-            ->get();
+    public function show() {
+        $posts = Post::with('user', 'category')->get();
 
         return response()->json([
             'message' => 'Posts retrieved successfully',
