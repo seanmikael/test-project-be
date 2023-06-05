@@ -32,6 +32,8 @@ Route::delete('/user/{id}', [UserController::class, 'delete']);
 
 //Post Routes
 Route::get('posts', [PostController::class, 'show']);
+//for post view page
+Route::get('/posts/{id}', [PostController::class, 'get']);
 Route::post('posts/create', [PostController::class, 'create']);
 Route::delete('/posts/{id}', [PostController::class, 'delete']);
 Route::put('/posts/{id}', [PostController::class, 'update']);

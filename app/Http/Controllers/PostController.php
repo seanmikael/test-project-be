@@ -19,8 +19,26 @@ class PostController extends Controller
         ], 200);
     }
 
+    //for view page
+    public function get($id)
+    {
+        $post = Post::with('user', 'category')->find($id);
+    
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found',
+            ], 404);
+        }
+    
+        return response()->json([
+            'message' => 'Post retrieved successfully',
+            'post' => $post,
+        ], 200);
+    }
+
     public function create(Request $request){ 
         $request->validate([
+            'title' => 'required|string|max:255',
             'content' => 'required|string|max:255',
             'status' => 'required|string|in:Publish,Draft',
             'category_id' => 'required|exists:categories,id'
@@ -34,6 +52,7 @@ class PostController extends Controller
         }
 
         $post = $user->posts()->create([
+            'title' => $request->title,
             'content' => $request->content,
             'status' => $request->status,
             'category_id' => $request->category_id,
@@ -56,6 +75,7 @@ class PostController extends Controller
 
     public function update(Request $request, $id){
         $request->validate([
+            'title' => 'required|string|max:255',
             'content' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string|in:Publish,Draft',
@@ -63,6 +83,7 @@ class PostController extends Controller
         ]);
 
         $post = Post::findOrFail($id);
+        $post->title = $request->title;
         $post->content = $request->content;
         $post->status = $request->status;
         $post->category_id = $request->category_id;
