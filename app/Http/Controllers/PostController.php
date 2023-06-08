@@ -36,33 +36,38 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function create(Request $request){ 
+    public function create(Request $request)
+    {
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:255',
             'status' => 'required|string|in:Publish,Draft',
-            'category_id' => 'required|exists:categories,id'
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
-        
+
         $user = Auth::user();
 
         if (!$user) {
-            // Handle the case when the user is not authenticated
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('images', 'public');
+        }
+
         $post = $user->posts()->create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'status' => $request->status,
-            'category_id' => $request->category_id,
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'status' => $request->input('status'),
+            'category_id' => $request->input('category_id'),
+            'image_path' => $imagePath,
         ]);
 
-      
-    return response()->json([
-        'message' => 'post created',
-        'post' => $post
-    ], 201);
+        return response()->json(['message' => 'Post created', 'post' => $post], 201);
     }
 
     public function delete($id){

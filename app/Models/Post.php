@@ -25,5 +25,6 @@ class Post extends Model
         'content',
         'category_id',
         'status',
+        'image_path'
     ];
 }
