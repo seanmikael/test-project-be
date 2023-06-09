@@ -43,7 +43,7 @@ class PostController extends Controller
             'content' => 'required|string|max:255',
             'status' => 'required|string|in:Publish,Draft',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
 
         $user = Auth::user();
@@ -78,26 +78,34 @@ class PostController extends Controller
         return response()->json(['message' => 'User deleted']);
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string|in:Publish,Draft',
-            
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
+    
         $post = Post::findOrFail($id);
         $post->title = $request->title;
         $post->content = $request->content;
         $post->status = $request->status;
         $post->category_id = $request->category_id;
+    
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('images', 'public');
+            $post->image_path = $imagePath;
+        }
+    
         $post->save();
-
-    return response()->json([
-        'message' => 'Post updated',
-        'post' => $post
-    ], 200);
-
+    
+        return response()->json([
+            'message' => 'Post updated',
+            'post' => $post
+        ], 200);
     }
+
 }
