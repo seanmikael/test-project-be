@@ -43,3 +43,16 @@ Route::get('categories', [CategoryController::class, 'show']);
 Route::post('categories/create', [CategoryController::class, 'create']);
 Route::delete('categories/{id}', [CategoryController::class, 'delete']);
 Route::put('categories/{id}', [CategoryController::class, 'update']);
+
+//Dashboard counts
+Route::get('/counts', function () {
+    $postCount = DB::table('posts')->count();
+    $categoryCount = DB::table('categories')->count();
+    $userCount = DB::table('users')->count();
+
+    return response()->json([
+        'postCount' => $postCount,
+        'categoryCount' => $categoryCount,
+        'userCount' => $userCount,
+    ]);
+});
