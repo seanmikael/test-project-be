@@ -35,10 +35,9 @@ class AuthController extends Controller
         
         if ($user->status === 'Inactive') {
             return response()->json([
-                'status' => 'error',
-                'message' => 'User is inactive',
+              'error' => 'User is inactive',
             ], 401);
-        }
+          }
     
         $token = auth()->attempt($credentials);
         
