@@ -1,31 +1,27 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
-
-
-
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::group([
 
     'middleware' => ['api', 'auth:api'],
-    'prefix' => 'auth'
- 
- ], function ($router) {
- 
-     Route::post('login', [AuthController::class, 'login'])->withoutMiddleware(['auth:api']);
-     Route::post('logout', [AuthController::class, 'logout']);
-     Route::post('refresh', [AuthController::class, 'refresh'])->withoutMiddleware(['auth:api']);
-     Route::get('user', [AuthController::class, 'me']);
-     Route::post('register', [AuthController::class, 'register'])->withoutMiddleware(['auth:api']);
- 
- });
- 
- //User Routes
+    'prefix' => 'auth',
+
+], function ($router) {
+
+    Route::post('login', [AuthController::class, 'login'])->withoutMiddleware(['auth:api']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh'])->withoutMiddleware(['auth:api']);
+    Route::get('user', [AuthController::class, 'me']);
+    Route::post('register', [AuthController::class, 'register'])->withoutMiddleware(['auth:api']);
+
+});
+
+//User Routes
 Route::get('user', [UserController::class, 'show']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::delete('/user/{id}', [UserController::class, 'delete']);
@@ -49,10 +45,13 @@ Route::get('/counts', function () {
     $postCount = DB::table('posts')->count();
     $categoryCount = DB::table('categories')->count();
     $userCount = DB::table('users')->count();
+    $inactiveUserCount = DB::table('users')->where('status', 'Inactive')->count();
 
     return response()->json([
         'postCount' => $postCount,
         'categoryCount' => $categoryCount,
         'userCount' => $userCount,
+        'inactiveUserCount' => $inactiveUserCount,
+
     ]);
 });
